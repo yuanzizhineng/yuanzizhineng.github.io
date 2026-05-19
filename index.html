@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>元字智能科技 SIMIOT · 让物联网连接更简单</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --dark: #0a0e27;
+      --dark-2: #0f1333;
+      --dark-3: #141837;
+      --dark-4: #1a1f45;
+      --blue: #0066ff;
+      --neon: #00d4ff;
+      --neon-soft: rgba(0, 212, 255, 0.15);
+      --orange: #ff6a00;
+      --orange-soft: rgba(255, 106, 0, 0.15);
+      --text-dark: #ffffff;
+      --text-body: #a0a8c8;
+      --text-light: #6b7294;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(0, 212, 255, 0.4);
+      --glow-blue: 0 0 20px rgba(0, 212, 255, 0.25);
+      --glow-orange: 0 0 20px rgba(255, 106, 0, 0.25);
+      --shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+      color: var(--text-body);
+      background: var(--dark);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ========== ANIMATIONS ========== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes pulse-glow-blue {
+      0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.25); }
+      50% { box-shadow: 0 0 40px rgba(0, 212, 255, 0.5); }
+    }
+    @keyframes pulse-glow-orange {
+      0%, 100% { box-shadow: 0 0 15px rgba(255, 106, 0, 0.3); }
+      50% { box-shadow: 0 0 35px rgba(255, 106, 0, 0.6); }
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    @keyframes bounce-arrow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* ========== NAV ========== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 14, 39, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(10, 14, 39, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .logo-img {
+      height: 48px;
+      width: auto;
+      display: block;
+      filter: invert(1) hue-rotate(180deg) brightness(1.2) saturate(1.4);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: 14px;
+      color: var(--text-body);
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--neon);
+      border-bottom-color: var(--neon);
+    }
+
+    .nav-cta {
+      background: var(--orange) !important;
+      color: white !important;
+      padding: 9px 22px !important;
+      border-radius: 6px;
+      font-size: 14px !important;
+      font-weight: 600;
+      border: none !important;
+      transition: all 0.2s !important;
+      box-shadow: 0 0 15px rgba(255, 106, 0, 0.3);
+    }
+    .nav-cta:hover {
+      background: #e55a00 !important;
+      box-shadow: 0 0 25px rgba(255, 106, 0, 0.5) !important;
+      transform: translateY(-1px);
+    }
+
+    .nav-mobile-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-dark);
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--dark);
+    }
+    #heroCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 0%, var(--dark) 75%);
+      z-index: 1;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--neon-soft);
+      color: var(--neon);
+      padding: 8px 18px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 28px;
+      border: 1px solid rgba(0, 212, 255, 0.25);
+    }
+    .hero-badge .pulse-dot {
+      width: 8px; height: 8px;
+      background: #00cc66;
+      border-radius: 50%;
+      animation: pulse-dot 1.5s infinite;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 60px);
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1.15;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--neon), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: clamp(15px, 2.2vw, 19px);
+      color: var(--text-body);
+      margin-bottom: 40px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--orange);
+      color: white;
+      padding: 15px 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 0 20px rgba(255,106,0,0.3);
+    }
+    .btn-primary:hover {
+      background: #e55a00;
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(255,106,0,0.5);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--neon);
+      padding: 15px 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      border: 2px solid var(--neon);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-secondary:hover {
+      background: var(--neon-soft);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .hero-trust {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+    .hero-trust span {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+    .hero-trust .divider {
+      width: 1px;
+      height: 16px;
+      background: var(--border-hover);
+    }
+    .hero-trust strong { color: var(--neon); }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      color: var(--text-light);
+      font-size: 24px;
+      animation: bounce-arrow 2s infinite;
+    }
+
+    /* ========== STATS BAR ========== */
+    .stats-bar {
+      background: var(--dark-2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 2;
+    }
+    .stats-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+    }
+    .stat-item {
+      padding: 32px 20px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--neon);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    /* ========== SECTIONS ========== */
+    .section {
+      padding: 100px 24px;
+      position: relative;
+    }
+    .section-dark { background: var(--dark); }
+    .section-dark2 { background: var(--dark-2); }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--neon);
+      margin-bottom: 14px;
+    }
+    .section-tag::before {
+      content: '';
+      width: 20px;
+      height: 2px;
+      background: var(--neon);
+      border-radius: 2px;
+    }
+
+    .section-title {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+    .section-desc {
+      font-size: 16px;
+      color: var(--text-light);
+      max-width: 540px;
+      margin-bottom: 56px;
+    }
+
+    /* ========== ADVANTAGES ========== */
+    .adv-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .adv-card {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 36px 28px;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .adv-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .adv-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--glow-blue);
+      transform: translateY(-5px);
+    }
+    .adv-card:hover::before { opacity: 1; }
+
+    .adv-icon {
+      width: 56px; height: 56px;
+      background: var(--neon-soft);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      margin-bottom: 22px;
+    }
+    .adv-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+    .adv-card p {
+      font-size: 14px;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+
+    /* ========== PRODUCTS ========== */
+    .prod-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .prod-card {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.4s;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .prod-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--glow-blue);
+      transform: translateY(-5px);
+    }
+    .prod-card.featured {
+      border-color: rgba(255, 106, 0, 0.4);
+      box-shadow: 0 0 30px rgba(255,106,0,0.15);
+    }
+    .prod-card.featured:hover {
+      box-shadow: 0 0 40px rgba(255,106,0,0.3);
+    }
+    .prod-card.featured .prod-badge { display: block; }
+
+    .prod-badge {
+      display: none;
+      background: linear-gradient(90deg, var(--orange), #ff9a4d);
+      color: white;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px;
+      letter-spacing: 1.5px;
+    }
+    .prod-top {
+      padding: 32px 28px 24px;
+      flex: 1;
+    }
+    .prod-tag {
+      display: inline-block;
+      background: var(--neon-soft);
+      color: var(--neon);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+    .prod-card.featured .prod-tag {
+      background: var(--orange-soft);
+      color: var(--orange);
+    }
+    .prod-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+    .prod-scene {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 18px;
+    }
+    .prod-scene strong { color: var(--neon); }
+    .prod-features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .prod-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-body);
+    }
+    .prod-feature::before {
+      content: '✓';
+      color: #00cc66;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .prod-bottom {
+      padding: 20px 28px;
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .prod-btn {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+      border: 1.5px solid var(--neon);
+      color: var(--neon);
+    }
+    .prod-btn:hover {
+      background: var(--neon-soft);
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    }
+    .prod-card.featured .prod-btn {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: white;
+      box-shadow: 0 0 15px rgba(255,106,0,0.3);
+    }
+    .prod-card.featured .prod-btn:hover {
+      background: #e55a00;
+      box-shadow: 0 0 25px rgba(255,106,0,0.5);
+    }
+
+    /* ========== DASHBOARD PREVIEW ========== */
+    .dash-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .dash-text h2 {
+      font-size: clamp(24px, 3.5vw, 34px);
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 18px;
+      line-height: 1.3;
+    }
+    .dash-text p {
+      font-size: 15px;
+      color: var(--text-body);
+      margin-bottom: 30px;
+      line-height: 1.8;
+    }
+    .dash-features {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .dash-feature {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 15px;
+      color: var(--text-body);
+    }
+    .dash-feature strong { color: var(--text-dark); }
+    .dash-feature-icon {
+      width: 40px; height: 40px;
+      background: var(--neon-soft);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .dash-screenshot {
+      background: #0c1029;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 8px 50px rgba(0,0,0,0.5);
+    }
+    .dash-header-bar {
+      background: #0e1230;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dash-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .dash-dot.red { background: #ff5f57; }
+    .dash-dot.yellow { background: #ffbd2e; }
+    .dash-dot.green { background: #28c840; }
+    .dash-dots { display: flex; gap: 6px; }
+    .dash-url {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 5px 14px;
+      font-size: 12px;
+      color: var(--text-light);
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .dash-body {
+      padding: 20px;
+    }
+    .dash-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .dash-stat-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      padding: 16px;
+      border: 1px solid var(--border);
+    }
+    .dash-stat-label {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-bottom: 6px;
+    }
+    .dash-stat-val {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--neon);
+    }
+    .dash-chart {
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+    .dash-chart-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+    }
+    .dash-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 60px;
+    }
+    .dash-bar {
+      flex: 1;
+      background: linear-gradient(to top, var(--blue), var(--neon));
+      border-radius: 3px 3px 0 0;
+      min-height: 5px;
+      opacity: 0.7;
+    }
+    .dash-bar.highlight { opacity: 1; background: linear-gradient(to top, var(--orange), #ff9a4d); }
+    .dash-table-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .dash-table-row:last-child { border-bottom: none; }
+    .dash-table-row span { color: var(--text-light); }
+    .dash-table-row span:first-child { color: var(--text-dark); font-weight: 600; }
+    .dash-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .dash-status.online { background: rgba(0,204,102,0.15); color: #00cc66; }
+    .dash-status.warning { background: var(--orange-soft); color: var(--orange); }
+
+    /* ========== SCENARIOS ========== */
+    .scene-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .scene-card {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 36px 28px;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .scene-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--neon), var(--blue));
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .scene-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--glow-blue);
+      transform: translateY(-5px);
+    }
+    .scene-card:hover::after { opacity: 1; }
+    .scene-icon {
+      width: 56px; height: 56px;
+      background: var(--neon-soft);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      margin-bottom: 22px;
+    }
+    .scene-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 14px;
+    }
+    .scene-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .scene-list li {
+      font-size: 14px;
+      color: var(--text-light);
+      padding-left: 16px;
+      position: relative;
+    }
+    .scene-list li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--neon);
+      font-weight: 700;
+    }
+
+    /* ========== CUSTOMERS ========== */
+    .cust-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .cust-text h2 {
+      font-size: clamp(24px, 3.5vw, 34px);
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 18px;
+      line-height: 1.3;
+    }
+    .cust-text p {
+      font-size: 15px;
+      color: var(--text-body);
+      margin-bottom: 28px;
+    }
+    .cust-badges {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .cust-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-body);
+    }
+    .cust-badge-icon { font-size: 18px; }
+    .cust-logos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .cust-logo {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 16px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-dark);
+      transition: all 0.3s;
+    }
+    .cust-logo:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--glow-blue);
+      color: var(--neon);
+    }
+    .cust-logo-sub {
+      font-size: 11px;
+      color: var(--text-light);
+      font-weight: 400;
+      margin-top: 6px;
+    }
+
+    /* ========== SERVICES ========== */
+    .serv-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .serv-card {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.4s;
+    }
+    .serv-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--glow-blue);
+      transform: translateY(-4px);
+    }
+    .serv-icon {
+      font-size: 36px;
+      margin-bottom: 18px;
+    }
+    .serv-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+    .serv-card p {
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .contact-strip {
+      background: linear-gradient(135deg, var(--blue), #003399);
+      border-radius: 16px;
+      padding: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-strip::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.1), transparent);
+      border-radius: 50%;
+    }
+    .contact-strip h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .contact-strip p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+    }
+    .contact-info {
+      display: flex;
+      gap: 36px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: white;
+      font-size: 14px;
+    }
+    .contact-item-icon {
+      width: 44px; height: 44px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+
+    /* ========== ABOUT ========== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .about-card {
+      background: linear-gradient(135deg, var(--blue), #003399);
+      border-radius: 18px;
+      padding: 44px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-card::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -30%;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.15), transparent);
+      border-radius: 50%;
+    }
+    .about-card h2 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 18px;
+      line-height: 1.3;
+    }
+    .about-card p {
+      font-size: 14px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 24px;
+    }
+    .about-highlights {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .about-highlight {
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+    }
+    .about-highlight strong {
+      display: block;
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+    .about-text h2 {
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 18px;
+    }
+    .about-text p {
+      font-size: 15px;
+      color: var(--text-body);
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+    .about-text p strong { color: var(--neon); }
+    .about-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--neon);
+      font-size: 15px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--neon);
+      padding-bottom: 3px;
+      transition: all 0.2s;
+    }
+    .about-link:hover { gap: 14px; }
+
+    /* ========== CTA SECTION ========== */
+    .cta-section {
+      background: var(--dark-2);
+      padding: 100px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.05), transparent);
+      border-radius: 50%;
+    }
+    .cta-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .cta-inner h2 {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 18px;
+    }
+    .cta-inner p {
+      font-size: 16px;
+      color: var(--text-light);
+      margin-bottom: 40px;
+    }
+    .cta-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .cta-btn-glow {
+      animation: pulse-glow-orange 2.5s infinite;
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+      color: var(--text-light);
+      padding: 56px 24px 28px;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 44px;
+    }
+    .footer-brand .logo {
+      color: white;
+      margin-bottom: 16px;
+    }
+    .footer-brand p {
+      font-size: 13px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      color: var(--text-light);
+    }
+    .footer-col h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 18px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--neon); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* ========== FLOATING ========== */
+    .float-btns {
+      position: fixed;
+      right: 20px;
+      bottom: 24px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .float-btn {
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: all 0.3s;
+      border: none;
+    }
+    .float-btn:hover { transform: scale(1.1); }
+    .float-phone {
+      background: var(--orange);
+      color: white;
+      box-shadow: 0 0 20px rgba(255,106,0,0.3);
+    }
+    .float-top {
+      background: var(--dark-3);
+      color: var(--text-dark);
+      border: 1px solid var(--border);
+      display: none;
+    }
+    .float-wechat {
+      background: #07c160;
+      color: white;
+      box-shadow: 0 0 20px rgba(7,193,96,0.3);
+      position: relative;
+    }
+    .wechat-popup {
+      position: absolute;
+      right: 60px;
+      bottom: -10px;
+      width: 200px;
+      background: var(--dark-3);
+      border: 1px solid var(--border-hover);
+      border-radius: 12px;
+      padding: 20px 16px 16px;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(10px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .wechat-popup.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+    .wechat-popup::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      bottom: 20px;
+      width: 12px;
+      height: 12px;
+      background: var(--dark-3);
+      border-right: 1px solid var(--border-hover);
+      border-top: 1px solid var(--border-hover);
+      transform: rotate(45deg);
+    }
+    .wechat-popup-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+    .wechat-popup-sub {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-bottom: 14px;
+    }
+    .wechat-qr {
+      width: 140px;
+      height: 140px;
+      background: white;
+      border-radius: 8px;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .wechat-qr img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .wechat-qr-placeholder {
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+      padding: 10px;
+      line-height: 1.5;
+    }
+    .wechat-popup-id {
+      font-size: 13px;
+      color: var(--neon);
+      font-weight: 600;
+    }
+
+    /* ========== MOBILE NAV ========== */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 150;
+    }
+    .mobile-nav.active { display: block; }
+    .mobile-nav-menu {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      background: var(--dark-2);
+      padding: 28px;
+      transform: translateX(100%);
+      transition: transform 0.3s;
+    }
+    .mobile-nav.active .mobile-nav-menu { transform: translateX(0); }
+    .mobile-nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+    }
+    .mobile-nav-links { display: flex; flex-direction: column; gap: 4px; }
+    .mobile-nav-links a {
+      display: block;
+      padding: 14px 0;
+      font-size: 16px;
+      color: var(--text-body);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 1024px) {
+      .adv-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-inner { grid-template-columns: repeat(3, 1fr); }
+      .stat-item:nth-child(3) { border-right: none; }
+      .dash-wrapper { grid-template-columns: 1fr; }
+      .cust-grid { grid-template-columns: 1fr; }
+      .cust-logos { grid-template-columns: repeat(3, 1fr); }
+      .about-grid { grid-template-columns: 1fr; }
+      .scene-grid { grid-template-columns: repeat(2, 1fr); }
+      .serv-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-mobile-btn { display: block; }
+      .hero { min-height: 90vh; }
+      .hero-btns { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-secondary { width: 100%; max-width: 320px; justify-content: center; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .stat-item:nth-child(4) { border-right: none; }
+      .prod-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .adv-grid { grid-template-columns: 1fr; }
+      .dash-row { grid-template-columns: repeat(2, 1fr); }
+      .cust-logos { grid-template-columns: repeat(2, 1fr); }
+      .contact-strip { flex-direction: column; text-align: center; }
+      .about-highlights { grid-template-columns: 1fr; }
+      .scene-grid { grid-template-columns: 1fr; }
+      .serv-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .footer-top { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav" id="mobileNav">
+    <div class="mobile-nav-menu">
+      <div class="mobile-nav-header">
+        <div class="logo">
+          <img src="logo-2.png" alt="元字智能科技 SIMIOT" class="logo-img">
+        </div>
+        <button onclick="toggleMobileNav()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#fff">✕</button>
+      </div>
+      <div class="mobile-nav-links">
+        <a href="#advantage" onclick="toggleMobileNav()">核心优势</a>
+        <a href="#products" onclick="toggleMobileNav()">产品中心</a>
+        <a href="#dashboard" onclick="toggleMobileNav()">管理后台</a>
+        <a href="#scenarios" onclick="toggleMobileNav()">应用场景</a>
+        <a href="#customers" onclick="toggleMobileNav()">客户案例</a>
+        <a href="#service" onclick="toggleMobileNav()">服务保障</a>
+        <a href="#about" onclick="toggleMobileNav()">关于我们</a>
+        <a href="#contact" class="nav-cta" onclick="toggleMobileNav()" style="text-align:center;margin-top:12px">免费申请样卡</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <div class="logo">
+        <img src="logo-2.png" alt="元字智能科技 SIMIOT" class="logo-img">
+      </div>
+      <div class="nav-links">
+        <a href="#advantage">核心优势</a>
+        <a href="#products">产品中心</a>
+        <a href="#dashboard">管理后台</a>
+        <a href="#scenarios">应用场景</a>
+        <a href="#customers">客户案例</a>
+        <a href="#service">服务保障</a>
+        <a href="#about">关于我们</a>
+        <a href="#contact" class="nav-cta">免费申请样卡</a>
+      </div>
+      <button class="nav-mobile-btn" onclick="toggleMobileNav()">☰</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-overlay"></div>
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <div class="pulse-dot"></div>
+        运营商官方授权 · 稳定供货
+      </div>
+      <h1>元字智能科技<br><em>让物联网连接更简单</em></h1>
+      <p class="hero-sub">为智能家居、交通、安防提供稳定的 4G/5G 物联网卡<br>技术团队 10+ · 服务企业 50+</p>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-primary">免费申请样卡</a>
+        <a href="#products" class="btn-secondary">查看产品</a>
+      </div>
+      <div class="hero-trust">
+        <span><strong>三大运营商</strong> 官方直连</span>
+        <div class="divider"></div>
+        <span><strong>50+</strong> 企业客户验证</span>
+        <div class="divider"></div>
+        <span><strong>7×24h</strong> 快速响应</span>
+      </div>
+    </div>
+    <div class="hero-scroll">↓</div>
+  </section>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-num" data-target="20">0</div>
+        <div class="stat-label">集团员工</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="50">0</div>
+        <div class="stat-label">服务企业客户</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="3">0</div>
+        <div class="stat-label">运营商直连通道</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="1006">0</div>
+        <div class="stat-label">注册资本（万元）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="100">0</div>
+        <div class="stat-label">营收突破（万元）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="2025" data-no-plus="true">0</div>
+        <div class="stat-label">年2月成立</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Advantages -->
+  <section class="section section-dark" id="advantage">
+    <div class="section-inner">
+      <div class="fade-up">
+        <div class="section-tag">核心优势</div>
+        <h2 class="section-title">为什么选择元字智能？</h2>
+        <p class="section-desc">不拼低价，拼稳定和服务。每一个数字都是真实数据。</p>
+      </div>
+      <div class="adv-grid">
+        <div class="adv-card fade-up">
+          <div class="adv-icon">📡</div>
+          <h3>三大运营商直连</h3>
+          <p>移动 / 电信 / 联通官方卡源，真实套餐无虚量，资质齐全可查</p>
+        </div>
+        <div class="adv-card fade-up">
+          <div class="adv-icon">⚙️</div>
+          <h3>深度技术支持</h3>
+          <p>技术精英10+人，提供 API 接口、流量管理定制、组网方案设计</p>
+        </div>
+        <div class="adv-card fade-up">
+          <div class="adv-icon">💰</div>
+          <h3>灵活计费模式</h3>
+          <p>月包 / 年包 / 定向流量 / 流量池，可混合采购，按需配置</p>
+        </div>
+        <div class="adv-card fade-up">
+          <div class="adv-icon">🛎️</div>
+          <h3>7×24h 快速响应</h3>
+          <p>专属客服群 + 投诉热线，平均响应时间 &lt; 30 分钟</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section class="section section-dark2" id="products">
+    <div class="section-inner">
+      <div class="fade-up">
+        <div class="section-tag">产品中心</div>
+        <h2 class="section-title">三款核心产品，覆盖全场景</h2>
+        <p class="section-desc">插拔卡 · 贴片卡 · 工业卡 —— 匹配不同设备形态与使用环境。</p>
+      </div>
+      <div class="prod-grid">
+        <!-- Product 1 -->
+        <div class="prod-card featured fade-up">
+          <div class="prod-badge">热销推荐</div>
+          <div class="prod-top">
+            <div class="prod-tag">标准型</div>
+            <h3>插拔式物联网卡</h3>
+            <p class="prod-scene">适用：<strong>智能电表 · 共享设备 · POS机 · 车载终端</strong></p>
+            <div class="prod-features">
+              <div class="prod-feature">标准 SIM 卡形态，即插即用</div>
+              <div class="prod-feature">支持 4G/5G 双模网络</div>
+              <div class="prod-feature">低功耗设计，待机时间长</div>
+              <div class="prod-feature">全国通用流量，无漫游限制</div>
+            </div>
+          </div>
+          <div class="prod-bottom">
+            <a href="#contact" class="prod-btn">了解详情 →</a>
+          </div>
+        </div>
+        <!-- Product 2 -->
+        <div class="prod-card fade-up">
+          <div class="prod-badge">嵌入式</div>
+          <div class="prod-top">
+            <div class="prod-tag">贴片卡</div>
+            <h3>贴片式物联网卡</h3>
+            <p class="prod-scene">适用：<strong>智能手表 · 可穿戴设备 · 嵌入式模组</strong></p>
+            <div class="prod-features">
+              <div class="prod-feature">SMD 贴片封装，直接焊接主板</div>
+              <div class="prod-feature">体积小巧，适配微型设备</div>
+              <div class="prod-feature">抗震防松动，适合移动场景</div>
+              <div class="prod-feature">支持空中写号（OTA）</div>
+            </div>
+          </div>
+          <div class="prod-bottom">
+            <a href="#contact" class="prod-btn">咨询报价 →</a>
+          </div>
+        </div>
+        <!-- Product 3 -->
+        <div class="prod-card fade-up">
+          <div class="prod-badge">工业级</div>
+          <div class="prod-top">
+            <div class="prod-tag">企业版</div>
+            <h3>工业级物联网卡</h3>
+            <p class="prod-scene">适用：<strong>工业路由器 · 安防监控 · 户外设备 · 车载系统</strong></p>
+            <div class="prod-features">
+              <div class="prod-feature">宽温宽压（-40℃ ~ +85℃）</div>
+              <div class="prod-feature">IP67 防护等级，防尘防水</div>
+              <div class="prod-feature">抗震动、抗电磁干扰</div>
+              <div class="prod-feature">支持大流量/不限量套餐</div>
+            </div>
+          </div>
+          <div class="prod-bottom">
+            <a href="#contact" class="prod-btn">咨询定制 →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard Preview -->
+  <section class="section section-dark" id="dashboard">
+    <div class="section-inner">
+      <div class="dash-wrapper">
+        <div class="dash-text fade-up">
+          <div class="section-tag">管理后台</div>
+          <h2>智能管理后台<br>随时掌握每张卡</h2>
+          <p>一个账号管理数千设备，实时掌控流量余量与设备状态。告警、启停、分账——全在指尖完成。</p>
+          <div class="dash-features">
+            <div class="dash-feature">
+              <div class="dash-feature-icon">📊</div>
+              <div><strong>余量告警</strong> — 流量将尽时自动通知</div>
+            </div>
+            <div class="dash-feature">
+              <div class="dash-feature-icon">⚡</div>
+              <div><strong>远程启停</strong> — 随时开卡、停卡，无需人工</div>
+            </div>
+            <div class="dash-feature">
+              <div class="dash-feature-icon">💳</div>
+              <div><strong>分账续费</strong> — 按设备/按月灵活计费</div>
+            </div>
+            <div class="dash-feature">
+              <div class="dash-feature-icon">📋</div>
+              <div><strong>批量操作</strong> — 一次操作上千张卡</div>
+            </div>
+          </div>
+          <a href="#contact" class="btn-primary">预约演示 →</a>
+        </div>
+        <div class="dash-screenshot fade-up">
+          <div class="dash-header-bar">
+            <div class="dash-dots">
+              <div class="dash-dot red"></div>
+              <div class="dash-dot yellow"></div>
+              <div class="dash-dot green"></div>
+            </div>
+            <div class="dash-url">www.yuanzizhineng.com/console</div>
+          </div>
+          <div class="dash-body">
+            <div class="dash-row">
+              <div class="dash-stat-card">
+                <div class="dash-stat-label">在网设备</div>
+                <div class="dash-stat-val" style="color:var(--text-light)">—</div>
+              </div>
+              <div class="dash-stat-card">
+                <div class="dash-stat-label">本月流量</div>
+                <div class="dash-stat-val" style="color:var(--text-light)">—</div>
+              </div>
+              <div class="dash-stat-card">
+                <div class="dash-stat-label">告警设备</div>
+                <div class="dash-stat-val" style="color:var(--text-light)">—</div>
+              </div>
+              <div class="dash-stat-card">
+                <div class="dash-stat-label">在线率</div>
+                <div class="dash-stat-val" style="color:var(--text-light)">—</div>
+              </div>
+            </div>
+            <div class="dash-chart">
+              <div class="dash-chart-title">近7日流量消耗趋势</div>
+              <div class="dash-bars">
+                <div class="dash-bar" style="height:40%"></div>
+                <div class="dash-bar" style="height:55%"></div>
+                <div class="dash-bar" style="height:48%"></div>
+                <div class="dash-bar" style="height:70%"></div>
+                <div class="dash-bar" style="height:62%"></div>
+                <div class="dash-bar highlight" style="height:90%"></div>
+                <div class="dash-bar" style="height:30%"></div>
+              </div>
+            </div>
+            <div class="dash-chart" style="padding:14px 18px">
+              <div class="dash-table-row">
+                <span>设备名称</span><span>流量用量</span>
+                <span class="dash-status online">状态</span>
+              </div>
+              <div class="dash-table-row">
+                <span>示例设备-01</span><span>— GB / 月</span>
+                <span class="dash-status online">● 在线</span>
+              </div>
+              <div class="dash-table-row">
+                <span>示例设备-02</span><span>— GB / 月</span>
+                <span class="dash-status online">● 在线</span>
+              </div>
+              <div class="dash-table-row">
+                <span>示例设备-03</span><span>— GB / 月</span>
+                <span class="dash-status warning">⚠ 流量告警</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Application Scenarios -->
+  <section class="section section-dark2" id="scenarios">
+    <div class="section-inner">
+      <div class="fade-up">
+        <div class="section-tag">应用场景</div>
+        <h2 class="section-title">覆盖四大核心行业场景</h2>
+        <p class="section-desc">从智能家居到工业物联，元字物联网卡稳定连接每一个终端。</p>
+      </div>
+      <div class="scene-grid">
+        <div class="scene-card fade-up">
+          <div class="scene-icon">🏠</div>
+          <h3>智能家居</h3>
+          <ul class="scene-list">
+            <li>智能门锁远程控制</li>
+            <li>环境传感器数据上传</li>
+            <li>家电远程联动管理</li>
+            <li>安防摄像头实时监控</li>
+          </ul>
+        </div>
+        <div class="scene-card fade-up">
+          <div class="scene-icon">🚗</div>
+          <h3>智能交通</h3>
+          <ul class="scene-list">
+            <li>车载T-BOX联网</li>
+            <li>共享单车/电动车管理</li>
+            <li>ETC远程缴费终端</li>
+            <li>车路协同数据传输</li>
+          </ul>
+        </div>
+        <div class="scene-card fade-up">
+          <div class="scene-icon">🛡️</div>
+          <h3>智能安防</h3>
+          <ul class="scene-list">
+            <li>视频监控7×24h在线</li>
+            <li>入侵报警即时推送</li>
+            <li>消防烟感远程监测</li>
+            <li>门禁系统联网管理</li>
+          </ul>
+        </div>
+        <div class="scene-card fade-up">
+          <div class="scene-icon">🏭</div>
+          <h3>工业物联网</h3>
+          <ul class="scene-list">
+            <li>设备运行状态监测</li>
+            <li>工业路由器组网</li>
+            <li>能耗数据远程采集</li>
+            <li>生产线自动化调度</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customers -->
+  <section class="section section-dark" id="customers">
+    <div class="section-inner">
+      <div class="cust-grid">
+        <div class="cust-text fade-up">
+          <div class="section-tag">客户案例</div>
+          <h2>50+ 企业客户的<br>共同选择</h2>
+          <p>来自智能制造、智慧城市、新能源等多个行业的真实客户。成立当年即服务 50+ 企业，靠的是稳定和口碑。</p>
+          <div class="cust-badges">
+            <div class="cust-badge">
+              <div class="cust-badge-icon">📞</div>
+              三大运营商官方授权
+            </div>
+            <div class="cust-badge">
+              <div class="cust-badge-icon">🏢</div>
+              科技型中小企业
+            </div>
+            <div class="cust-badge">
+              <div class="cust-badge-icon">📋</div>
+              ICP / 增值电信许可
+            </div>
+          </div>
+        </div>
+        <div class="cust-logos fade-up">
+          <div class="cust-logo">
+            信金科技
+            <div class="cust-logo-sub">智能金融设备</div>
+          </div>
+          <div class="cust-logo">
+            汉威电子
+            <div class="cust-logo-sub">传感器与物联网</div>
+          </div>
+          <div class="cust-logo">
+            友倍康
+            <div class="cust-logo-sub">医疗健康设备</div>
+          </div>
+          <div class="cust-logo">
+            豫能控股
+            <div class="cust-logo-sub">新能源充电桩</div>
+          </div>
+          <div class="cust-logo">
+            中原智联
+            <div class="cust-logo-sub">智慧城市</div>
+          </div>
+          <div class="cust-logo">
+            更多客户
+            <div class="cust-logo-sub">持续增加中…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section section-dark2" id="service">
+    <div class="section-inner">
+      <div class="fade-up">
+        <div class="section-tag">服务保障</div>
+        <h2 class="section-title">全方位服务，让您无后顾之忧</h2>
+        <p class="section-desc">从激活到续费，从技术支持到投诉处理，专人全程跟进。</p>
+      </div>
+      <div class="serv-grid">
+        <div class="serv-card fade-up">
+          <div class="serv-icon">🕐</div>
+          <h3>7×24h 快速响应</h3>
+          <p>全天候在线客服，平均响应时间 &lt; 30分钟</p>
+        </div>
+        <div class="serv-card fade-up">
+          <div class="serv-icon">⚙️</div>
+          <h3>深度技术支持</h3>
+          <p>API接口对接、流量管理定制、组网方案设计</p>
+        </div>
+        <div class="serv-card fade-up">
+          <div class="serv-icon">📞</div>
+          <h3>投诉与建议热线</h3>
+          <p>24小时专线受理，分类处理即时响应</p>
+        </div>
+        <div class="serv-card fade-up">
+          <div class="serv-icon">🎯</div>
+          <h3>定制化方案</h3>
+          <p>根据业务场景量身定制卡品与计费方案</p>
+        </div>
+      </div>
+
+      <div class="contact-strip fade-up" id="contact">
+        <div>
+          <h3>还有疑问？直接联系我们</h3>
+          <p>客户经理 1 对 1 对接，最快 30 分钟内给出方案</p>
+        </div>
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-item-icon">📞</div>
+            <div>
+              <div style="font-weight:700">185-7637-9999</div>
+              <div style="font-size:12px;opacity:0.7">7×24h</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">💬</div>
+            <div>
+              <div style="font-weight:700">微信/QQ</div>
+              <div style="font-size:12px;opacity:0.7">383749726</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">✉️</div>
+            <div>
+              <div style="font-weight:700">383749726@qq.com</div>
+              <div style="font-size:12px;opacity:0.7">工作日 9-18h</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section section-dark" id="about">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div class="about-card fade-up">
+          <h2>成立当年即服务<br>50+ 企业</h2>
+          <p>2025 年 2 月成立，扎根郑州大学科技园。技术精英 10+ 人，服务企业 50+ 家，营收突破 100 万元。不求大而全，只求每张卡都稳定、每个客户都服务到位。</p>
+          <div class="about-highlights">
+            <div class="about-highlight">
+              <strong>20+</strong>
+              集团员工
+            </div>
+            <div class="about-highlight">
+              <strong>1006万</strong>
+              注册资本
+            </div>
+            <div class="about-highlight">
+              <strong>50+</strong>
+              企业客户
+            </div>
+            <div class="about-highlight">
+              <strong>100万+</strong>
+              营收突破
+            </div>
+          </div>
+        </div>
+        <div class="about-text fade-up">
+          <div class="section-tag">关于我们</div>
+          <h2>元字智能科技（河南）有限公司</h2>
+          <p>公司位于河南省郑州市中原区149号西三环大学科技园东区创新园4号楼B座7楼。集团20+人，技术精英10+人，注册资本1006万元。我们专注一件事：<strong>让物联网卡稳定、透明、好用。</strong></p>
+          <p>从卡品选型到流量管理，从 API 对接到定制方案——每一步都有专人跟进。不做一锤子买卖，做的是长期稳定的服务关系。</p>
+          <a href="#products" class="about-link">查看产品详情 →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-inner fade-up">
+      <h2>免费申请样卡，先试再决定</h2>
+      <p>提供真实设备测试，验证稳定性和套餐真实性。<br>不满意不收费，这是我们最简单的承诺。</p>
+      <div class="cta-btns">
+        <a href="#contact" class="btn-primary cta-btn-glow">免费申请样卡</a>
+        <a href="#service" class="btn-secondary">咨询报价</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="logo">
+            <img src="logo-2.png" alt="元字智能科技 SIMIOT" class="logo-img">
+          </div>
+          <p>元字赋能 · 物联万象。专注物联网卡销售与技术服务，为智能家居、交通、安防等行业提供稳定可靠的连接方案。</p>
+        </div>
+        <div class="footer-col">
+          <h4>产品中心</h4>
+          <a href="#products">插拔式物联网卡</a>
+          <a href="#products">贴片式物联网卡</a>
+          <a href="#products">工业级物联网卡</a>
+          <a href="#dashboard">管理后台</a>
+        </div>
+        <div class="footer-col">
+          <h4>支持服务</h4>
+          <a href="#service">激活教程</a>
+          <a href="#service">常见问题</a>
+          <a href="#service">发票说明</a>
+          <a href="#service">续费方式</a>
+        </div>
+        <div class="footer-col">
+          <h4>联系我们</h4>
+          <a href="tel:185-7637-9999">185-7637-9999</a>
+          <a href="#">微信/QQ：383749726</a>
+          <a href="mailto:383749726@qq.com">383749726@qq.com</a>
+          <a href="#">河南省郑州市中原区149号西三环大学科技园东区创新园4号楼B座7楼</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024-2025 元字智能科技（河南）有限公司 版权所有</span>
+        <span>豫ICP备XXXXXXXX号-1</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Buttons -->
+  <div class="float-btns">
+    <button class="float-btn float-top" onclick="window.scrollTo({top:0})" title="回到顶部">&uarr;</button>
+    <a href="tel:185-7637-9999" class="float-btn float-phone" title="立即拨打">📞</a>
+    <div style="position:relative">
+      <button class="float-btn float-wechat" onclick="toggleWechat()" title="微信咨询">💬</button>
+      <div class="wechat-popup" id="wechatPopup">
+        <div class="wechat-popup-title">立即咨询</div>
+        <div class="wechat-popup-sub">扫码添加微信，专属客服对接</div>
+        <div class="wechat-qr">
+          <img src="wjl.png" alt="微信二维码">
+        </div>
+        <div class="wechat-popup-id">微信号：383749726</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========== Particle Animation ==========
+    (function() {
+      const canvas = document.getElementById('heroCanvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let animId;
+      const PARTICLE_COUNT = 120;
+      const MAX_DIST = 150;
+
+      function resize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      function Particle() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.3;
+        this.vy = (Math.random() - 0.5) * 0.3;
+        this.r = Math.random() * 2 + 1;
+      }
+
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push(new Particle());
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(0, 212, 255, 0.5)';
+          ctx.fill();
+
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            const dx = p.x - p2.x;
+            const dy = p.y - p2.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < MAX_DIST) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = 'rgba(0, 212, 255, ' + (1 - dist / MAX_DIST) * 0.2 + ')';
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+        animId = requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // ========== WeChat Popup Toggle ==========
+    function toggleWechat() {
+      document.getElementById('wechatPopup').classList.toggle('active');
+    }
+    document.addEventListener('click', (e) => {
+      const popup = document.getElementById('wechatPopup');
+      if (popup && popup.classList.contains('active')) {
+        const btn = e.target.closest('.float-wechat');
+        const panel = e.target.closest('.wechat-popup');
+        if (!btn && !panel) popup.classList.remove('active');
+      }
+    });
+
+    // ========== Nav Scroll Effect ==========
+    const nav = document.getElementById('navbar');
+    const floatTop = document.querySelector('.float-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        nav.classList.add('scrolled');
+        floatTop.style.display = 'flex';
+      } else {
+        nav.classList.remove('scrolled');
+        floatTop.style.display = 'none';
+      }
+    });
+
+    // ========== Mobile Nav Toggle ==========
+    function toggleMobileNav() {
+      document.getElementById('mobileNav').classList.toggle('active');
+    }
+    document.getElementById('mobileNav').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('mobileNav')) toggleMobileNav();
+    });
+
+    // ========== Active Nav Link ==========
+    const sections = document.querySelectorAll('section[id], div[id]');
+    const navLinks = document.querySelectorAll('.nav-links a:not(.nav-cta)');
+    window.addEventListener('scroll', () => {
+      let cur = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 120) cur = s.id;
+      });
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+      });
+    });
+
+    // ========== Scroll Fade-Up Animation ==========
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, i * 80);
+          fadeObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    fadeEls.forEach(el => fadeObserver.observe(el));
+
+    // ========== Counter Animation ==========
+    const statNums = document.querySelectorAll('.stat-num[data-target]');
+    let counterStarted = false;
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !counterStarted) {
+          counterStarted = true;
+          statNums.forEach(el => {
+            const target = parseInt(el.dataset.target);
+            const noPlus = el.dataset.noPlus === 'true';
+            const duration = 2000;
+            const start = performance.now();
+            function update(now) {
+              const elapsed = now - start;
+              const progress = Math.min(elapsed / duration, 1);
+              const eased = 1 - Math.pow(1 - progress, 3);
+              const current = Math.floor(eased * target);
+              el.textContent = current + (noPlus ? '' : '+');
+              if (progress < 1) requestAnimationFrame(update);
+              else el.textContent = target + (noPlus ? '' : '+');
+            }
+            requestAnimationFrame(update);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+    if (statNums.length) {
+      counterObserver.observe(statNums[0].closest('.stats-bar'));
+    }
+  </script>
+</body>
+</html>
