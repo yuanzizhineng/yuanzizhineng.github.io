@@ -1999,12 +1999,12 @@
           statNums.forEach(el => {
             const target = parseInt(el.dataset.target);
             const noPlus = el.dataset.noPlus === 'true';
-            const duration = 2000;
+            const duration = 1200;
             const start = performance.now();
             function update(now) {
               const elapsed = now - start;
               const progress = Math.min(elapsed / duration, 1);
-              const eased = 1 - Math.pow(1 - progress, 3);
+              const eased = 1 - Math.pow(2, -10 * progress);
               const current = Math.floor(eased * target);
               el.textContent = current + (noPlus ? '' : '+');
               if (progress < 1) requestAnimationFrame(update);
