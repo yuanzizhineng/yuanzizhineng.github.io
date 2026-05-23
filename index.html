@@ -1149,6 +1149,75 @@
       border: 1px solid var(--border);
       display: none;
     }
+    .float-wechat {
+      background: #07c160;
+      color: white;
+      box-shadow: 0 0 20px rgba(7,193,96,0.3);
+      position: relative;
+    }
+    .wechat-popup {
+      position: absolute;
+      right: 60px;
+      bottom: -10px;
+      width: 200px;
+      background: var(--dark-3);
+      border: 1px solid var(--border-hover);
+      border-radius: 12px;
+      padding: 20px 16px 16px;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(10px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .wechat-popup.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+    .wechat-popup::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      bottom: 20px;
+      width: 12px;
+      height: 12px;
+      background: var(--dark-3);
+      border-right: 1px solid var(--border-hover);
+      border-top: 1px solid var(--border-hover);
+      transform: rotate(45deg);
+    }
+    .wechat-popup-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+    .wechat-popup-sub {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-bottom: 14px;
+    }
+    .wechat-qr {
+      width: 140px;
+      height: 140px;
+      background: white;
+      border-radius: 8px;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .wechat-qr img { width: 100%; height: 100%; object-fit: cover; }
+    .wechat-popup-id {
+      font-size: 13px;
+      color: var(--neon);
+      font-weight: 600;
+    }
 
     /* ========== MOBILE NAV ========== */
     .mobile-nav {
@@ -1783,6 +1852,17 @@
   <div class="float-btns">
     <button class="float-btn float-top" onclick="window.scrollTo({top:0})" title="回到顶部">&uarr;</button>
     <a href="tel:185-7637-9999" class="float-btn float-phone" title="立即拨打">📞</a>
+    <div style="position:relative">
+      <button class="float-btn float-wechat" onclick="toggleWechat()" title="微信咨询">💬</button>
+      <div class="wechat-popup" id="wechatPopup">
+        <div class="wechat-popup-title">立即咨询</div>
+        <div class="wechat-popup-sub">扫码添加微信，专属客服对接</div>
+        <div class="wechat-qr">
+          <img src="wjl.png" alt="微信二维码">
+        </div>
+        <div class="wechat-popup-id">微信号：383749726</div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -1847,6 +1927,19 @@
       }
       animate();
     })();
+
+    // ========== WeChat Popup Toggle ==========
+    function toggleWechat() {
+      document.getElementById('wechatPopup').classList.toggle('active');
+    }
+    document.addEventListener('click', (e) => {
+      const popup = document.getElementById('wechatPopup');
+      if (popup && popup.classList.contains('active')) {
+        if (!e.target.closest('.float-wechat') && !e.target.closest('.wechat-popup')) {
+          popup.classList.remove('active');
+        }
+      }
+    });
 
     // ========== Nav Scroll Effect ==========
     const nav = document.getElementById('navbar');
