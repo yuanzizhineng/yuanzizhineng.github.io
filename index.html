@@ -1999,7 +1999,8 @@
           statNums.forEach(el => {
             const target = parseInt(el.dataset.target);
             const noPlus = el.dataset.noPlus === 'true';
-            const duration = 1200;
+            // 小数字快（600ms），大数字慢（1200ms），线性插值
+            const duration = 600 + (target / 7000) * 600;
             const start = performance.now();
             function update(now) {
               const elapsed = now - start;
